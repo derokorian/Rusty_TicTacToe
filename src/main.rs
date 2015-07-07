@@ -3,7 +3,7 @@ extern crate rand;
 use std::io;
 use rand::Rng;
 
-fn print_board(board: &mut Vec<u8>) {
+fn print_board(board: &mut Vec<u8>, show_moves: bool) {
   let mut i = 0;
   let mut line = String::new();
   loop {
@@ -16,9 +16,22 @@ fn print_board(board: &mut Vec<u8>) {
     }
     i += 1;
     if i%3 == 0 {
+      if show_moves {
+        if i == 3 {
+          line.push_str("\t\t1|2|3");
+        } else if i == 6 {
+          line.push_str("\t\t4|5|6");
+        } else {
+          line.push_str("\t\t7|8|9");
+        }
+      }
       println!("{}", line);
       if i < 9 {
-        println!("-----");
+        if show_moves {
+          println!("-----\t\t-----");
+        } else {
+          println!("-----");
+        }
       }
       line = String::new();
     } else {
@@ -50,7 +63,6 @@ fn get_user_move(mut board: &mut Vec<u8>) {
       }
     }
   }
-  print_board(&mut board);
 }
 
 fn get_cpu_move(mut board:&mut Vec<u8>) {
@@ -63,7 +75,7 @@ fn get_cpu_move(mut board:&mut Vec<u8>) {
       break;
     }
   }
-  print_board(&mut board);
+  print_board(&mut board, true);
 }
 
 fn is_player_winner(board:&mut Vec<u8>, player: u8) -> bool {
@@ -132,9 +144,16 @@ fn is_board_full(board: &mut Vec<u8>) -> bool {
 fn main() {
   let mut board: Vec<u8> = vec![0,0,0, 0,0,0, 0,0,0];
 
+  println!("1|2|3");
+  println!("-----");
+  println!("4|5|6");
+  println!("-----");
+  println!("7|8|9");
+
   loop {
     get_user_move(&mut board);
     if is_player_winner(&mut board, 1) {
+      print_board(&mut board, false);
       println!("You won!");
       break;
     } else if is_board_full(&mut board) {
